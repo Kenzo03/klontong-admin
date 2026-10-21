@@ -7,6 +7,9 @@ import { UsersModule } from './users/users.module';
 import { HealthController } from './health.controller';
 import { CategoriesModule } from './categories/categories.module';
 import { CategoriesController } from './categories/categories.controller';
+import { ProductsModule } from './products/products.module';
+import { UploadsController } from './uploads/uploads.controller';
+import { UploadsModule } from './uploads/uploads.module';
 
 @Module({
   imports: [
@@ -15,7 +18,9 @@ import { CategoriesController } from './categories/categories.controller';
     AuthModule,
     UsersModule,
     CategoriesModule,
+    ProductsModule,
+    UploadsModule,
   ],
-  controllers: [HealthController, CategoriesController],
+  controllers: [HealthController, CategoriesController, UploadsController],
 })
 export class AppModule {}
