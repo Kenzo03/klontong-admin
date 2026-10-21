@@ -1,4 +1,3 @@
-'!src/generated/**' to collectCoverageFrom
 import type { Config } from 'jest';
 import { pathsToModuleNameMapper } from 'ts-jest';
 import ts from 'typescript';
@@ -21,6 +20,7 @@ const config: Config = {
   moduleNameMapper: pathsToModuleNameMapper(paths, { prefix: '<rootDir>/' }),
   collectCoverageFrom: [
     'src/**/*.(t|j)s',
+    '!src/generated/**',
     'libs/**/*.(t|j)s',
     'apps/**/*.(t|j)s',
   ],
