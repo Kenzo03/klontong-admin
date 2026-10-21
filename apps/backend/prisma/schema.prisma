@@ -28,8 +28,6 @@ enum Uom{
   SACHET
   STRIP
   SACK
-  LITER
-  KILOGRAM
 }
 
 model User{
@@ -43,7 +41,7 @@ model User{
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
   productsCreated Product[] @relation("ProductCreatedBy")
   productsUpdated Product[] @relation("ProductUpdatedBy")
-
+  audit_logs AuditLog[]
   @@map("users")
 }
 
@@ -82,4 +80,23 @@ model Product {
 
   @@index([categoryId]) // Postgres does not index foreign keys automatically
   @@map("products")
+}
+
+model AuditLog {
+  id         Int      @id @default(autoincrement())
+  actorId    Int?     @map("actor_id") // null = system
+  actor      User?    @relation(fields: [actorId], references: [id], onDelete: Restrict)
+  action     String   @db.VarChar(50) // user.register, user.approve, product.update, ...
+  entityType String   @map("entity_type") @db.VarChar(30)
+  entityId   Int      @map("entity_id")
+  before     Json?
+  after      Json?
+  reason     String?  @db.VarChar(200)
+  ip         String?  @db.VarChar(45)
+  userAgent  String?  @map("user_agent") @db.VarChar(255)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@index([entityType, entityId, createdAt])
+  @@index([actorId, createdAt])
+  @@map("audit_logs")
 }
