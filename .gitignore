@@ -7,3 +7,6 @@ coverage
 .env.*
 !.env.example
 *.log
+*.tsbuildinfo
+apps/backend/src/generated/
+apps/backend/uploads/
