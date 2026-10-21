@@ -13,6 +13,7 @@
     "db:seed": "pnpm --filter ./apps/backend db:seed",
     "db:reset": "pnpm --filter ./apps/backend db:reset",
     "lint": "pnpm -r lint",
-    "test": "pnpm -r test"
+    "test": "pnpm -r test",
+    "verify": "pnpm --filter ./apps/backend lint && pnpm --filter ./apps/backend exec tsc --noEmit && pnpm --filter ./apps/backend test && pnpm --filter ./apps/backend test:e2e && pnpm -r build"
   }
 }

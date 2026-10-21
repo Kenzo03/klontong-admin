@@ -5,6 +5,7 @@ import { toJson, writeAudit } from '../audit/audit';
 import type { Actor } from '../common/decorators';
 import { PUBLIC_USER } from './user.select';
 import { ListUsersDto, UpdateUserDto } from './users.dto';
+import { pageArgs, pageMeta } from '../common/pagination';
 
 @Injectable()
 export class UsersService {
@@ -14,10 +15,10 @@ export class UsersService {
     // No filter = everyone except rejected registrations (they have their own "Ditolak" filter).
     const where: Prisma.UserWhereInput = q.status ? { status: q.status } : { status: { not: 'REJECTED' } };
     const [data, total] = await this.prisma.$transaction([
-      this.prisma.user.findMany({ where, select: PUBLIC_USER, orderBy: { createdAt: 'desc' }, skip: (q.page - 1) * q.pageSize, take: q.pageSize }),
+      this.prisma.user.findMany({ where, select: PUBLIC_USER, orderBy: { createdAt: 'desc' }, ...pageArgs(q)}),
       this.prisma.user.count({ where }),
     ]);
-    return { data, meta: { page: q.page, pageSize: q.pageSize, total, totalPages: Math.ceil(total / q.pageSize) } };
+    return { data, meta: pageMeta(q,total) };
   }
 
   update(id: number, dto: UpdateUserDto, actor: Actor) {
