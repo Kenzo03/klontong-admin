@@ -1,4 +1,4 @@
-import {hashPassword,verifyPassword} from './password.ts';
+import {hashPassword,verifyPassword} from './password';
 
 describe('password',() => {
   it('check for correct and wrong password', async () => {
