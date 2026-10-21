@@ -1,11 +1,9 @@
-import { Type } from 'class-transformer';
-import { IsEnum, IsIn, IsInt, IsOptional, Max, Min } from 'class-validator';
+import { IsEnum, IsIn, IsOptional } from 'class-validator';
 import { Role, UserStatus } from '../generated/prisma/client';
+import { PaginationQueryDto } from '../common/pagination';
 
-export class ListUsersDto {
+export class ListUsersDto extends PaginationQueryDto {
   @IsOptional() @IsEnum(UserStatus) status?: UserStatus;
-  @IsOptional() @Type(() => Number) @IsInt() @Min(1) page = 1;
-  @IsOptional() @Type(() => Number) @IsInt() @Min(1) @Max(50) pageSize = 20;
 }
 
 export class UpdateUserDto {
