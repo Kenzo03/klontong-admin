@@ -5,6 +5,8 @@ import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { HealthController } from './health.controller';
+import { CategoriesModule } from './categories/categories.module';
+import { CategoriesController } from './categories/categories.controller';
 
 @Module({
   imports: [
@@ -12,7 +14,8 @@ import { HealthController } from './health.controller';
     PrismaModule,
     AuthModule,
     UsersModule,
+    CategoriesModule,
   ],
-  controllers: [HealthController],
+  controllers: [HealthController, CategoriesController],
 })
 export class AppModule {}
