@@ -9,16 +9,19 @@ import { pageArgs, pageMeta } from '../common/pagination';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async list(q: ListUsersDto) {
     // No filter = everyone except rejected registrations (they have their own "Ditolak" filter).
     const where: Prisma.UserWhereInput = q.status ? { status: q.status } : { status: { not: 'REJECTED' } };
-    const [data, total] = await this.prisma.$transaction([
-      this.prisma.user.findMany({ where, select: PUBLIC_USER, orderBy: { createdAt: 'desc' }, ...pageArgs(q)}),
+    const [data, total, byStatus] = await this.prisma.$transaction([
+      this.prisma.user.findMany({ where, select: PUBLIC_USER, orderBy: { createdAt: 'desc' }, ...pageArgs(q) }),
       this.prisma.user.count({ where }),
+      this.prisma.user.groupBy({ by: ['status'], _count: { _all: true }, orderBy: { status: 'asc' } }),
     ]);
-    return { data, meta: pageMeta(q,total) };
+    // Counts for the filter chips and the nav badge, e.g. { PENDING: 1, ACTIVE: 2 }
+    const counts = Object.fromEntries(byStatus.map((g) => [g.status, g._count._all]));
+    return { data, meta: { ...pageMeta(q, total), counts } };
   }
 
   update(id: number, dto: UpdateUserDto, actor: Actor) {
@@ -33,8 +36,8 @@ export class UsersService {
       const after = await tx.user.update({ where: { id }, data: { role: dto.role, status: dto.status }, select: PUBLIC_USER });
       const action =
         after.status === 'REJECTED' && before.status === 'PENDING' ? 'user.reject'
-        : (before.status === 'PENDING' || before.status === 'REJECTED') && after.status === 'ACTIVE' ? 'user.approve' // a rejection can be reconsidered
-        : 'user.update';
+          : (before.status === 'PENDING' || before.status === 'REJECTED') && after.status === 'ACTIVE' ? 'user.approve' // a rejection can be reconsidered
+            : 'user.update';
       await writeAudit(tx, { actorId: actor.id, action, entityType: 'user', entityId: id, before: toJson(before), after: toJson(after), ip: actor.ip, userAgent: actor.userAgent });
       return after;
     });
