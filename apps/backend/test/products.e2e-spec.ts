@@ -3,7 +3,7 @@ import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { configureApp } from '../src/app.setup';
-import { serveUploads } from '../src/uploads/serve-uploads';
+import { serveUploads } from '../src/uploads/serve-upload';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { hashPassword } from '../src/auth/password';
 
@@ -131,6 +131,8 @@ describe('Products (e2e)', () => {
     const page = (await admin.get(`/api/products?categoryId=${categoryId}&sort=price&order=asc&pageSize=2`).expect(200)).body;
     expect(page.meta).toEqual({ page: 1, pageSize: 2, total: 4, totalPages: 2 });
     expect(page.data.map((p: { price: number }) => p.price)).toEqual([8500, 9000]);
+        
+    await admin.get('/api/products?sort=category&order=asc').expect(200);
 
     const active = (await admin.get('/api/products?status=active').expect(200)).body.data as { id: number }[];
     expect(active.some((p) => p.id === productId)).toBe(false); // restored product is still inactive
