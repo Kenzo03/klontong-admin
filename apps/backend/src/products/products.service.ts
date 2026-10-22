@@ -18,7 +18,7 @@ export class ProductsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly config: ConfigService,
-  ) {}
+  ) { }
 
   async list(q: ListProductsDto, actor: Actor) {
     if (q.status === 'archived' && actor.role !== 'ADMIN') {
@@ -35,7 +35,7 @@ export class ProductsService {
     };
     // `sort` is whitelisted by the DTO; `id` breaks ties so pages never overlap
     const orderBy: Prisma.ProductOrderByWithRelationInput[] = [
-      { [q.sort]: q.order } as Prisma.ProductOrderByWithRelationInput,
+      q.sort === 'category' ? { category: { name: q.order } } : ({ [q.sort]: q.order } as Prisma.ProductOrderByWithRelationInput),
       { id: 'asc' },
     ];
     const [rows, total] = await this.prisma.$transaction([

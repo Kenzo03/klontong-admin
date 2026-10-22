@@ -13,6 +13,16 @@ const MESSAGES: Record<string, string> = {
   SELF_CHANGE: 'Anda tidak bisa mengubah peran atau status akun sendiri.',
   INVALID_STATUS_CHANGE: 'Hanya pendaftaran yang menunggu yang bisa ditolak.',
   VALIDATION_FAILED: 'Periksa kembali isian Anda.',
+  PRODUCT_NOT_FOUND: 'Produk tidak ditemukan.',
+  SKU_TAKEN: 'SKU sudah dipakai produk lain.',
+  ADMIN_ONLY_FIELDS: 'Hanya admin yang dapat mengubah harga, stok, atau satuan.',
+  REASON_REQUIRED: 'Isi alasan perubahan, karena harga, stok, atau satuan diubah.',
+  UOM_CHANGE_INCOMPLETE: 'Ganti satuan wajib disertai harga dan stok baru.',
+  IMAGE_NOT_FOUND: 'Gambar belum terunggah. Pilih gambar lagi.',
+  FILE_REQUIRED: 'Pilih file gambar.',
+  UNSUPPORTED_IMAGE_TYPE: 'Gambar harus JPG, PNG, atau WebP.',
+  PAYLOAD_TOO_LARGE: 'Ukuran gambar maksimal 2 MB.',
+  INVALID_REFERENCE: 'Kategori tidak ditemukan.',
 }
 
 /** The `code` of an API error body, if there is one. */
